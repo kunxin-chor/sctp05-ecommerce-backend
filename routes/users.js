@@ -71,17 +71,44 @@ router.get('/me', AuthenticateWithJWT, async (req, res) => {
 })
 
 // update the details of the current logged-in user
-router.put('/me', (req, res) => {
-    res.json({
-        'message': 'Update details'
-    })
+router.put('/me', AuthenticateWithJWT, async (req, res) => {
+    try {
+        console.log(req.body);
+        // todo: validate if all the keys in req.body exists
+        if (!req.body.name || !req.body.email || !req.body.salutation || !req.body.marketingPreferences || !req.body.country) {
+            return res.status(401).json({
+                'error':'Invalid payload or missing keys'
+            })
+        }
+        const userId = req.userId;
+        await userService.updateUserDetails(userId, req.body);
+        res.json({
+            'message':'User details updated'
+        })
+        
+
+    } catch (e) {   
+        console.log(e);
+        res.status(500).json({
+            'message':'Internal server error'
+        })
+
+    } 
 })
 
 // delete the current user
-router.delete('/me', (req, res) => {
-    res.json({
-        'message': 'Delete user'
-    })
+router.delete('/me', AuthenticateWithJWT, async (req, res) => {
+   try {
+     await userService.deleteUserAccount(req.userId);
+     res.json({
+        'message': "User account deleted"
+     })
+   } catch (e) {
+     console.log(e);
+     res.status(500).json({
+        'message':'Internal Server Error'
+     })
+   }
 })
 
 module.exports = router;

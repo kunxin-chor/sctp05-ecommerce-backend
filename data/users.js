@@ -81,7 +81,7 @@ async function createUser({ name, email, password, salutation, country, marketin
     }
 }
 
-async function updateUser(id, { name, email, password, salutation, country, marketingPreferences }) {
+async function updateUser(id, { name, email, salutation, country, marketingPreferences }) {
     if (!id || typeof id !== 'number') {
         throw new Error('Invalid user ID');
     }
@@ -92,8 +92,8 @@ async function updateUser(id, { name, email, password, salutation, country, mark
 
         // Update user data
         await connection.query(
-            `UPDATE users SET name = ?, email = ?, password = ?, salutation = ?, country = ? WHERE id = ?`,
-            [name, email, password, salutation, country, id]
+            `UPDATE users SET name = ?, email = ?, salutation = ?, country = ? WHERE id = ?`,
+            [name, email, salutation, country, id]
         );
 
         // Update marketing preferences by deleting existing ones and inserting new ones
