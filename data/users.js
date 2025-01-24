@@ -20,8 +20,19 @@ async function getUserById(id) {
     if (!id || typeof id !== 'number') {
         throw new Error('Invalid user ID');
     }
-    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [id]);
-    return rows[0];
+    const [rows] = await pool.query(`SELECT * FROM users WHERE users.id = ?`, [id]);
+    const user = rows[0];
+    
+    const [preferences] = await pool.query(`SELECT preference_id FROM user_marketing_preferences WHERE user_id = ?`, [id]);
+    user.marketingPreferences = preferences.map(p=>{
+        if (p.preference_id == 1) {
+            return "email";
+        } else {
+            return "sms";
+        }
+    });
+
+    return user;
 }
 
 async function createUser({ name, email, password, salutation, country, marketingPreferences }) {
