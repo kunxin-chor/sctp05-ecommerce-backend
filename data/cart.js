@@ -2,8 +2,14 @@ const pool = require('../database');
 
 async function getCartContents(userId) {
     const [rows] = await pool.query(`
-        SELECT * FROM cart_items JOIN products
-          ON cart_items.product_id = products.id
+        SELECT c.id, 
+               c.product_id, 
+               p.image AS imageUrl, 
+               p.name AS productName,
+               CAST(price AS DOUBLE) AS price,
+               c.quantity 
+               FROM cart_items AS c JOIN products AS p
+          ON c.product_id = p.id
           WHERE user_id = ?
         `, [userId]);
 
