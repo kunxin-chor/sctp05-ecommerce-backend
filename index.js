@@ -10,7 +10,8 @@ const app = express();
 
 // import the routers
 const productRouter = require('./routes/products');
-const userRouter = require('./routes/users')
+const userRouter = require('./routes/users');
+const cartRouter = require('./routes/cart')
 
 // initalize mdidleware
 app.use(express.json());
@@ -31,6 +32,7 @@ app.get('/', async (req,res)=>{
 // of the URL will go to the productRouter
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
+app.use('/api/cart', cartRouter);
 
 const PORT = process.env.PORT || 3000; // <-- for deployment later, because cloud hosting services may need us to set a port
 app.listen(PORT,()=>{
