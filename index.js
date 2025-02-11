@@ -13,9 +13,9 @@ const productRouter = require('./routes/products');
 const userRouter = require('./routes/users');
 const cartRouter = require('./routes/cart');
 const checkoutRouter = require('./routes/checkout');
+const stripeRouter = require('./routes/stripe');
 
 // initalize mdidleware
-app.use(express.json());
 app.use(cors());
 
 // test route
@@ -31,10 +31,12 @@ app.get('/', async (req,res)=>{
 
 // If the URL begins with `/products`, the remaining
 // of the URL will go to the productRouter
-app.use('/api/products', productRouter);
-app.use('/api/users', userRouter);
-app.use('/api/cart', cartRouter);
-app.use('/api/checkout', checkoutRouter);
+app.use('/api/products', express.json(), productRouter);
+app.use('/api/users',  express.json(), userRouter);
+app.use('/api/cart', express.json(), cartRouter);
+app.use('/api/checkout', express.json(), checkoutRouter);
+app.use('/stripe', stripeRouter);
+
 
 const PORT = process.env.PORT || 3000; // <-- for deployment later, because cloud hosting services may need us to set a port
 app.listen(PORT,()=>{
